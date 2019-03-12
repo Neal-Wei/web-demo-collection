@@ -6,10 +6,10 @@
 	<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 	<style>
 	html,body,ul,li{margin: 0;padding: 0; list-style: none;}
-	.outside-wrapper{position: relative;width: 50%;}
+	.outside-wrapper{position: relative;width: 50%;margin-left: 200px;margin-top: 100px;}
 	.input-contain{position: relative;width: 100%;}
 	.input-contain i{position: absolute;right: 5px;top:calc(50% - 10px);font-size: 20px;color: #909399;}
-	.select-list{position: absolute;top: 40px; width: 100%;background-color:#fff;border: 1px solid #E4E7ED;box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);border-radius: 2px;display:none;z-index: 100;}
+	.select-list{position: absolute;margin-top: 10px; width: 100%;background-color:#fff;border: 1px solid #E4E7ED;box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);border-radius: 2px;display:none;z-index: 100;}
 	.arrow-top{display: block; position: absolute; width: 0px; height: 0px; border: 8px solid transparent; border-bottom-color:rgba(0,0,0,.1); top: -9px;border-top-width: 0; left: 20px;}
 	.arrow-top:after{content:''; display: block; position: absolute; width: 0px; height: 0px; border: 8px solid transparent; top: 1px; border-bottom-color: white;border-top-width: 0; left: -8px;}
 	.select-list>ul{max-height: 250px;overflow: auto;}
@@ -22,8 +22,8 @@
 	</style>
 </head>
 <body>
-	<dl class="dl-horizontal form-group pt20">
-		<dt class="form-control-static"><i class="asterisk">*</i>分类：</dt>
+	<dl class="dl-horizontal form-group">
+		<dt class="form-control-static"></dt>
 		<dd class="pt3">
 			<div class="outside-wrapper">
 				<div class="input-contain">
@@ -97,8 +97,19 @@
 			e.stopPropagation();
 			$('.search-input').focus().parent().siblings('.select-list').slideDown(100);
 		});
+		// 分类下拉列表 收、展
+		$('.select-list').on('click', '.arrow-wrap i', function(e) {
+			e.stopPropagation()
+			$(this).parent().siblings('ul').slideToggle('fast',function(){
+				if($(this).is(':hidden')){
+					$(this).siblings('.arrow-wrap').find('i').text('<')
+				}else{
+					$(this).siblings('.arrow-wrap').find('i').text('>')
+				}
+			})
+		});
 	 })
-	// 渲染多级树
+	// 用递归渲染多级树
 	function threeTree(array,_padding) {
 		var ul = $('<ul class="dropMenu-list"></ul>');
       	for (var i = 0; i < array.length; i++) {
