@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>模态提示框</title>
+	<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		.custom_modal_img_error::before{background:url('../images/icon_bg_big.jpg') no-repeat 0 0;background-position: -100px 0;}
+		.custom_modal_img_success::before{background:url('../images/icon_bg_big.jpg') no-repeat 0 0;background-position: 0 0;}
+		.custom_modal_img_warn::before{background:url('../images/icon_bg_big.jpg') no-repeat 0 0;background-position: -50px 0;}
+		/*成功提示框*/
+		#bag_hint_modal{width: 100%;height:100%;position:fixed;z-index:99999999;display:none;background: rgba(0,0,0,0.5);top: 0;user-select: none;}
+		#bag_hint_modal .bag_hint_main{width:360px;height:160px;line-height:160px;box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12), 0 0 6px 0 rgba(0,0,0,0.04);background-color:#fff;position: absolute;top:50%;left: 50%;text-align:center;margin-left:-180px;margin-top:-80px}
+		#bag_hint_modal .bag_hint_main .bag_hint_tips{color:red ;position:absolute;bottom:0;left:8px;display: none;font-style:normal; line-height:30px;font-size:12px;}
+		#bag_hint_modal .bag_hint_main .bag_hint_eas{position:absolute;top:0;right:8px;display: block;height:30px;line-height:30px;width:30px;font-size:24px;cursor: pointer;color: rgba(0,0,0,0.6);}
+		#bag_hint_modal .bag_hint_main .bag_hint_eas:hover{color: rgba(0,0,0,0.85);}
+		#bag_hint_modal .bag_hint_main .bag_hint_text{margin:0;display: inline-block;top: 0;left: 0;padding-left: 25px;position: relative;height:24px;line-height: 24px}
+		#bag_hint_modal .bag_hint_main .bag_hint_text::before{content: "";width: 24px;height: 24px;display: block;position: absolute;left: 0;top: 0;}
+		#bag_hint_modal .bag_hint_main .bag_hint_error::before{background:url('../images/icon_bg_big.png') no-repeat 0 0;background-position: -993px -3px;}
+		#bag_hint_modal .bag_hint_main .bag_hint_success::before{background:url('../images/icon_bg_big.png') no-repeat 0 0;background-position: -963px -3px;}
+		#bag_hint_modal .bag_hint_main .bag_hint_warn::before{background:url('../images/icon_bg_big.png') no-repeat 0 0;background-position: -1023px -3px;}
+		.show-tips .custom_modal_eas{position:absolute;right: 0;top:-66px;width:30px;height:30px;font-size: 20px;cursor: pointer;}
+		#bag_hint_modal.show-tips .bag_hint_main .bag_hint_text{line-height:40px;}
+		#bag_hint_modal.show-tips .bag_hint_main .bag_hint_text::before{width:40px;height:40px;}
+		#bag_hint_modal.show-tips .bag_hint_main .bag_hint_text::before{left:-20px;}
+		.treebox .whiteBack .form-control:focus{ border-color:#fff; box-shadow:none; -webkit-box-shadow:none }
+		button{margin: 100px 0 0 200px;}
+	</style>
+</head>
+<body>
+	<button type="button" class="btn btn-primary">click</button>
+	<!-- 消失提示模态框 -->
+	<div id="bag_hint_modal" class="custom_modal">
+	  <div class="bag_hint_main custom_modal_main">
+	    <i class="bag_hint_tips custom_modal_tips"><span></span>秒后自动关闭</i>
+	    <span class="custom_modal_eas">×</span>
+	    <p class="bag_hint_text custom_modal_text"></p>
+	  </div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	$('button').click(function() {
+		bagHintModalFn('warn',"网络错误");
+	});
+	//消息提示
+function bagHintModalFn(type,text,open,callback){
+    if(!type)console.error('请传入状态','error','warn','success');
+    var bag_hint_modal = $('#bag_hint_modal');
+    bag_hint_modal.addClass('show-tips');
+    var _type = type
+    var _text = text
+    var _open = open?open:false
+    var _callback = typeof callback === 'function'?callback:new Function()
+    var use = {
+        'error':'custom_modal_img_error',
+        'warn':'custom_modal_img_warn',
+        'success':'custom_modal_img_success'
+    }
+    var tipsBol = false
+    bag_hint_modal.fadeIn(100)
+    init()
+
+
+    function init(){
+        var reg = /\b(custom_modal_img_[a-z]+)\b/g,className = bag_hint_modal.find('.bag_hint_text')[0].className;
+        var _class =reg.test(className)?className.replace(reg,use[_type]):className+' '+use[_type]
+        bag_hint_modal.find('.bag_hint_text').attr('class',_class)
+                                                    .text(_text)
+
+        events()
+        if(_open){
+            time()
+            bag_hint_modal.find('.bag_hint_tips').fadeIn(100)
+        }
+    }
+
+    function time(){
+        var index = 5
+        var p  =bag_hint_modal.find('.bag_hint_tips>span').text(index)
+        setTime()
+        function setTime(){
+            p.text(index)
+            index--
+            if(index <= 0||tipsBol){
+                clearTimeout(setTime)
+                bag_hint_modal_hide()
+            }else{
+                setTimeout(setTime,1000)
+            }
+        }
+    }
+    function events(){
+        bag_hint_modal.click(bag_hint_modal_hide)
+        bag_hint_modal.find('.bag_hint_main').click(function(e){
+            var e = e || window.event
+            e.stopPropagation()
+        })
+        bag_hint_modal.find('.bag_hint_main>.custom_modal_eas').click(bag_hint_modal_hide)
+    }
+    function bag_hint_modal_hide(){
+        bag_hint_modal.fadeOut(100,function(){
+            _callback()
+        })
+    }
+}
+</script>
+</html>
