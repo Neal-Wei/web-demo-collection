@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+	html,body,ul,li{margin: 0;padding: 0; list-style: none;}
+	.outside-wrapper{position: relative;width: 50%;}
+	.input-contain{position: relative;width: 100%;}
+	.input-contain i{position: absolute;right: 5px;top:calc(50% - 10px);font-size: 20px;color: #909399;}
+	.select-list{position: absolute;top: 40px; width: 100%;background-color:#fff;border: 1px solid #E4E7ED;box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);border-radius: 2px;display:none;z-index: 100;}
+	.arrow-top{display: block; position: absolute; width: 0px; height: 0px; border: 8px solid transparent; border-bottom-color:rgba(0,0,0,.1); top: -9px;border-top-width: 0; left: 20px;}
+	.arrow-top:after{content:''; display: block; position: absolute; width: 0px; height: 0px; border: 8px solid transparent; top: 1px; border-bottom-color: white;border-top-width: 0; left: -8px;}
+	.select-list>ul{max-height: 250px;overflow: auto;}
+	.select-list .no-match{padding: 5px 3px;display: none;}
+	.select-list ul li .arrow-wrap,.select-list ul li .txt-surroud{height: 35px;line-height: 35px;cursor: pointer;padding: 0 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+	.select-list ul li .arrow-wrap.active,.select-list ul li .txt-surroud.active{color: #3A78E7;}
+	.select-list ul li .txt-surroud{padding-left: 10px;}
+	.select-list ul li .arrow-wrap:hover,.select-list ul li .txt-surroud:hover{background-color:#F5F7FA;}
+	.select-list ul li i{font-size: 20px;color: #909399;}
+	</style>
+</head>
+<body>
+	<dl class="dl-horizontal form-group pt20">
+		<dt class="form-control-static"><i class="asterisk">*</i>分类：</dt>
+		<dd class="pt3">
+			<div class="outside-wrapper">
+				<div class="input-contain">
+					<input type="hidden" name="category[]" value=''>
+					<input type="text" class="search-input form-control" placeholder="请选择分类" autocomplete="off" required>
+					<i class="icontree icon-arrow_drop_down"></i>
+				</div>
+				<div class="select-list">
+					<span class="arrow-top"></span>
+					<div class="no-match"></div>
+				</div>
+			</div>
+		</dd>
+	</dl>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	var data = [
+	        {
+		        "text": "第一级1",
+		        "pid":0,
+		        "children": [
+		            {
+			            "text": "第二级1",
+			            "children": [
+			                {
+			                "text": "第三级1"
+			                },
+			                {
+			                "text": "3333"
+			                }
+			            ]
+		            },
+		            {
+			            "text": "第二级2",
+			            "children": [
+			                {
+			                	"text": "第三级2",
+			                	"children": [
+			                		{
+			                			"text": "第四季",
+			                		}
+			                	]
+			                }
+			            ]
+		            },
+		        ]
+	        },
+	        {
+		        "text": "第一级2",
+		        "children": [
+		            {
+			            "text": "第二级1",
+			            "children": [
+			            
+			            ]
+		        	},
+		        ]
+	        },
+	        {
+		        "text": "第一级3",
+		        "children": [
+		        	
+		        ]
+	        },
+	    ];
+	 $(function(){
+	 	$('.select-list').append(threeTree(data))
+	 	// 分类点击显示下拉菜单
+		$('.input-contain').click(function(e) {
+			e.stopPropagation();
+			$('.search-input').focus().parent().siblings('.select-list').slideDown(100);
+		});
+	 })
+	// 渲染多级树
+	function threeTree(array,_padding) {
+		var ul = $('<ul class="dropMenu-list"></ul>');
+      	for (var i = 0; i < array.length; i++) {
+          	var data = array[i];
+			if(data.pid == 0){
+				var padding = 10;
+			}else if(_padding){
+				padding = _padding+15;
+			}
+          	if (data.children && data.children.length>0) {
+              	var menu = $('<li><div id='+data.text+' class="arrow-wrap txt" style="padding-left:'+padding+'px"><i class="icontree icon-arrow_drop_down">&gt;</i>'+data.text+'</div></li>');
+              	menu.append(threeTree(data.children,padding));
+              	ul.append(menu)
+          	} else {
+          		ul.append('<li><div id='+data.text+' class="txt-surroud txt" style="padding-left:'+(padding+5)+'px">'+data.text+'</div></li>');
+          	}
+      	}
+        return ul;
+    }
+</script>
+</html>
