@@ -101,12 +101,15 @@
 		$('.select-list').on('click', '.arrow-wrap i', function(e) {
 			e.stopPropagation()
 			$(this).parent().siblings('ul').slideToggle('fast',function(){
-				if($(this).is(':hidden')){
-					$(this).siblings('.arrow-wrap').find('i').text('<')
-				}else{
-					$(this).siblings('.arrow-wrap').find('i').text('>')
-				}
+				$(this).is(':hidden')? $(this).siblings('.arrow-wrap').find('i').text('<') : $(this).siblings('.arrow-wrap').find('i').text('>');
 			})
+		});
+		// 分类下拉文本选中赋值
+		$('.select-list').on('click', 'ul li .txt', function(e) {
+			e.stopPropagation();
+			var id = $(this).attr('id');
+			$(this).addClass('active').parents('.select-list').hide().find('.txt').not($(this)).removeClass('active')
+			$('.search-input').val($(this).text()).siblings('input:hidden').val($(this).attr('id'));
 		});
 	 })
 	// 用递归渲染多级树
