@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>字符串与二进制互转</title>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	var str = 'abc';
+	var code = str.charCodeAt();//charCodeAt()方法会返回制定位置的Unicode编码，并接受index参数,例如charCodeAt(index),如果不传默认为0,index是根据字符串的长度
+	// console.log(code)   为97(是str中的a的Unicode编码)
+	console.log(code.toString(2)) //将十进制编码转变为二进制编码
+	var str2 = String.fromCharCode(code);//fromCharCode()可以将Unicode编码转为字符串显示
+	console.log(str2) //a
+
+</script>
+</html>
